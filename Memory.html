@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#22201C; --bg2:#2A2722; --card:#2E2A24; --border:#3D382F;
+  --text:#EDE6D8; --text-dim:#A79E8C; --gold:#C9A45C; --gold-dim:#8A7345;
+  --green:#7BA26B; --red:#B5654E;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#FBF8F2; --bg2:#F2EDE1; --card:#FFFFFF; --border:#E2DAC7;
+    --text:#2A2620; --text-dim:#6F6656; --gold:#A97F2E; --gold-dim:#C9A45C;
+    --green:#5E8A4E; --red:#A24E36;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#FBF8F2; --bg2:#F2EDE1; --card:#FFFFFF; --border:#E2DAC7;
+  --text:#2A2620; --text-dim:#6F6656; --gold:#A97F2E; --gold-dim:#C9A45C;
+  --green:#5E8A4E; --red:#A24E36;
+}
+*{margin:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{
+  font-family:'Inter',sans-serif; color:var(--text); background:var(--bg);
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+h1,h2,h3,.serif{font-family:'Fraunces',serif;}
+.app{max-width:640px;margin:0 auto;padding:16px 16px 90px;}
+header{
+  position:sticky; top:0; z-index:10; background:var(--bg);
+  padding-top:calc(14px + env(safe-area-inset-top,0px));
+  padding-bottom:12px; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+header h1{font-size:22px; font-weight:600; letter-spacing:.3px;}
+.icon-btn{
+  background:var(--card); border:1px solid var(--border); color:var(--text);
+  width:38px; height:38px; border-radius:10px; font-size:16px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.greeting{color:var(--text-dim); font-size:14px; margin:14px 0 18px;}
+.empty{
+  text-align:center; padding:60px 20px; color:var(--text-dim);
+}
+.empty .big{font-size:40px; margin-bottom:10px;}
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:16px;
+  padding:16px; margin-bottom:14px;
+}
+.proj-card{cursor:pointer;}
+.proj-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+.proj-name{font-size:17px; font-weight:600;}
+.stage{
+  font-size:11px; color:var(--gold); text-transform:uppercase; letter-spacing:.6px;
+  margin-top:2px;
+}
+.badge{
+  font-size:11px; padding:3px 9px; border-radius:20px; white-space:nowrap;
+  border:1px solid var(--gold-dim); color:var(--gold); font-weight:600;
+}
+.next-label{font-size:11px; color:var(--text-dim); margin-top:12px; text-transform:uppercase; letter-spacing:.5px;}
+.next-text{font-size:15px; margin-top:4px; line-height:1.4;}
+.meta-row{display:flex; gap:14px; margin-top:10px; font-size:12px; color:var(--text-dim);}
+.section-title{
+  font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--text-dim);
+  margin:22px 0 10px;
+}
+.fab{
+  position:fixed; right:20px; bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  width:56px; height:56px; border-radius:50%; background:var(--gold); color:var(--bg);
+  border:none; font-size:26px; box-shadow:0 6px 16px rgba(0,0,0,.3); cursor:pointer;
+  z-index:20;
+}
+.inbox-item{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 4px; border-bottom:1px solid var(--border); font-size:14px;
+}
+.inbox-item:last-child{border-bottom:none;}
+.mini-btn{
+  background:none; border:1px solid var(--border); color:var(--text-dim);
+  font-size:11px; padding:5px 9px; border-radius:8px; cursor:pointer; margin-left:6px;
+}
+/* modal / detail overlay */
+.overlay{
+  position:fixed; inset:0; background:var(--bg); z-index:50; overflow-y:auto;
+  display:none;
+}
+.overlay.open{display:block;}
+.overlay-inner{max-width:640px; margin:0 auto; padding:16px 16px 60px;}
+.ov-header{
+  position:sticky; top:0; background:var(--bg); padding-top:calc(14px + env(safe-area-inset-top,0px));
+  padding-bottom:12px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border);
+}
+label{display:block; font-size:12px; color:var(--text-dim); margin:14px 0 6px; text-transform:uppercase; letter-spacing:.5px;}
+input,textarea,select{
+  width:100%; background:var(--bg2); border:1px solid var(--border); color:var(--text);
+  padding:11px 12px; border-radius:10px; font-family:inherit; font-size:15px;
+}
+textarea{resize:vertical; min-height:60px;}
+.btn{
+  background:var(--gold); color:var(--bg); border:none; padding:12px 18px;
+  border-radius:10px; font-weight:600; font-size:14px; cursor:pointer; margin-top:16px;
+}
+.btn.secondary{background:transparent; border:1px solid var(--border); color:var(--text);}
+.btn.small{padding:8px 12px; font-size:12px; margin-top:8px;}
+.row{display:flex; gap:10px;}
+.row > *{flex:1;}
+.tag-locked{
+  display:inline-block; font-size:11px; color:var(--green); border:1px solid var(--green);
+  padding:2px 8px; border-radius:20px; margin-top:6px;
+}
+.log-entry{border-left:2px solid var(--gold-dim); padding-left:12px; margin-bottom:16px;}
+.log-date{font-size:11px; color:var(--text-dim);}
+.log-text{font-size:14px; margin-top:3px; line-height:1.5;}
+.list-item{padding:10px 0; border-bottom:1px solid var(--border); font-size:14px;}
+.list-item:last-child{border-bottom:none;}
+.decision-locked{background:var(--bg2); border-radius:10px; padding:12px; margin-bottom:10px;}
+.tabs{display:flex; gap:6px; margin:16px 0; overflow-x:auto; padding-bottom:2px;}
+.tab{
+  padding:7px 13px; border-radius:20px; font-size:12px; background:var(--bg2);
+  color:var(--text-dim); white-space:nowrap; cursor:pointer; border:1px solid var(--border);
+}
+.tab.active{background:var(--gold); color:var(--bg); border-color:var(--gold);}
+.pane{display:none;}
+.pane.active{display:block;}
+.status-select{width:auto; display:inline-block; padding:6px 10px; font-size:12px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>🧠 Resume</h1>
+    <div style="display:flex;gap:8px;">
+      <button class="icon-btn" id="themeBtn">☾</button>
+    </div>
+  </header>
+  <div class="greeting" id="greeting"></div>
+
+  <div id="inboxWrap"></div>
+  <div id="projectsWrap"></div>
+</div>
+
+<button class="fab" id="fabBtn">+</button>
+
+<!-- Capture overlay -->
+<div class="overlay" id="captureOv">
+  <div class="overlay-inner">
+    <div class="ov-header">
+      <button class="icon-btn" onclick="closeOverlay('captureOv')">✕</button>
+      <h3>Capture</h3>
+    </div>
+    <label>What's on your mind?</label>
+    <textarea id="captureInput" placeholder="e.g. Buy cricket shoes"></textarea>
+    <label>Link (optional)</label>
+    <input id="captureUrl" placeholder="https://...">
+    <label>Image (optional)</label>
+    <input type="file" id="captureImg" accept="image/*">
+    <button class="btn" onclick="saveCapture()">Add to Inbox</button>
+  </div>
+</div>
+
+<!-- New project overlay -->
+<div class="overlay" id="newProjOv">
+  <div class="overlay-inner">
+    <div class="ov-header">
+      <button class="icon-btn" onclick="closeOverlay('newProjOv')">✕</button>
+      <h3>New Project</h3>
+    </div>
+    <label>Name</label>
+    <input id="npName" placeholder="e.g. Start Gym">
+    <label>Goal</label>
+    <textarea id="npGoal" placeholder="What does done look like?"></textarea>
+    <label>Current stage</label>
+    <input id="npStage" placeholder="e.g. Research">
+    <label>Next action</label>
+    <textarea id="npNext" placeholder="The exact next thing to do"></textarea>
+    <button class="btn" onclick="createProject()">Create Project</button>
+  </div>
+</div>
+
+<!-- Project detail overlay -->
+<div class="overlay" id="detailOv">
+  <div class="overlay-inner">
+    <div class="ov-header">
+      <button class="icon-btn" onclick="closeOverlay('detailOv')">✕</button>
+      <h3 id="detName" style="flex:1; font-size:17px;"></h3>
+      <select class="status-select" id="detStatus" onchange="updateStatus()">
+        <option value="active">Active</option>
+        <option value="paused">Paused</option>
+        <option value="complete">Complete</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <label style="margin-top:0;">Goal</label>
+      <div id="detGoal" style="font-size:14px; line-height:1.5;"></div>
+      <label>Current stage</label>
+      <input id="detStage" oninput="autosaveField('currentStage', this.value)">
+      <label>Next action</label>
+      <textarea id="detNext" oninput="autosaveField('nextAction', this.value)"></textarea>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-pane="paneLog" onclick="switchTab('paneLog',this)">Session Log</div>
+      <div class="tab" data-pane="paneResearch" onclick="switchTab('paneResearch',this)">Research</div>
+      <div class="tab" data-pane="paneDecisions" onclick="switchTab('paneDecisions',this)">Decisions</div>
+      <div class="tab" data-pane="paneDone" onclick="switchTab('paneDone',this)">Completed</div>
+    </div>
+
+    <div class="pane active" id="paneLog">
+      <label style="margin-top:0;">What did you do today?</label>
+      <textarea id="logWork" placeholder="Worked on..."></textarea>
+      <label>Where did you stop?</label>
+      <input id="logStop" placeholder="Stopping point">
+      <label>Link (optional)</label>
+      <input id="logUrl" placeholder="https://...">
+      <label>Image (optional)</label>
+      <input type="file" id="logImg" accept="image/*">
+      <button class="btn small" onclick="addSession()">Log &amp; set stopping point</button>
+      <div class="section-title">History</div>
+      <div id="sessionList"></div>
+    </div>
+
+    <div class="pane" id="paneResearch">
+      <label style="margin-top:0;">Option / finding</label>
+      <input id="resTitle" placeholder="e.g. Gym B — ₹2500/mo, 1km away">
+      <div class="row">
+        <select id="resStatus">
+          <option value="shortlisted">Shortlisted</option>
+          <option value="rejected">Rejected</option>
+          <option value="investigating">Investigating</option>
+        </select>
+      </div>
+      <label>Link (optional)</label>
+      <input id="resUrl" placeholder="https://...">
+      <label>Image (optional)</label>
+      <input type="file" id="resImg" accept="image/*">
+      <button class="btn small" onclick="addResearch()">Add</button>
+      <div id="researchList" style="margin-top:14px;"></div>
+    </div>
+
+    <div class="pane" id="paneDecisions">
+      <label style="margin-top:0;">Question</label>
+      <input id="decQ" placeholder="Which gym should I join?">
+      <label>Decision</label>
+      <input id="decD" placeholder="Gym B">
+      <label>Reason</label>
+      <textarea id="decReason" placeholder="Why — so you never re-litigate this"></textarea>
+      <label>Link (optional)</label>
+      <input id="decUrl" placeholder="https://...">
+      <label>Image (optional)</label>
+      <input type="file" id="decImg" accept="image/*">
+      <button class="btn small" onclick="addDecision()">🔒 Lock decision</button>
+      <div id="decisionList" style="margin-top:14px;"></div>
+    </div>
+
+    <div class="pane" id="paneDone">
+      <label style="margin-top:0;">Mark something done</label>
+      <input id="doneInput" placeholder="e.g. Researched 8 gyms" onkeydown="if(event.key==='Enter')addDone()">
+      <label>Link (optional)</label>
+      <input id="doneUrl" placeholder="https://...">
+      <label>Image (optional)</label>
+      <input type="file" id="doneImg" accept="image/*">
+      <button class="btn small" onclick="addDone()">Add to completed</button>
+      <div id="doneList" style="margin-top:14px;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const store = {
+  get(){ try{ return JSON.parse(localStorage.getItem('resume_data')) || {projects:[], inbox:[]}; }catch(e){ return {projects:[], inbox:[]}; } },
+  set(d){ try{ localStorage.setItem('resume_data', JSON.stringify(d)); }catch(e){} }
+};
+let data = store.get();
+let currentProjectId = null;
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function save(){ store.set(data); render(); if(currentProjectId) renderDetail(); }
+function fmtDate(ts){ return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
+
+// image/link attachments
+function downscale(file, cb){
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    const img = new Image();
+    img.onload = ()=>{
+      let w = img.width, h = img.height;
+      const maxW = 900;
+      if(w > maxW){ h = Math.round(h*(maxW/w)); w = maxW; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      cb(canvas.toDataURL('image/jpeg',0.72));
+    };
+    img.onerror = ()=>cb(null);
+    img.src = reader.result;
+  };
+  reader.onerror = ()=>cb(null);
+  reader.readAsDataURL(file);
+}
+function readExtras(urlId, imgId, cb){
+  const url = document.getElementById(urlId).value.trim();
+  const fileInput = document.getElementById(imgId);
+  const file = fileInput.files[0];
+  const clear = ()=>{ document.getElementById(urlId).value=''; fileInput.value=''; };
+  if(!file){ clear(); cb({url: url||null, image: null}); return; }
+  downscale(file, (dataUrl)=>{ clear(); cb({url: url||null, image: dataUrl}); });
+}
+function extrasHtml(e){
+  let h = '';
+  if(e && e.url) h += `<div style="margin-top:4px;"><a href="${esc(e.url)}" target="_blank" rel="noopener" style="color:var(--gold);font-size:12px;word-break:break-all;">${esc(e.url)}</a></div>`;
+  if(e && e.image) h += `<img src="${e.image}" style="max-width:100%;border-radius:8px;margin-top:6px;display:block;">`;
+  return h;
+}
+
+// theme
+function initTheme(){
+  const saved = localStorage.getItem('resume_theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+  updateThemeBtn();
+}
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur ? cur==='dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const next = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('resume_theme', next);
+  updateThemeBtn();
+}
+function updateThemeBtn(){
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur ? cur==='dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.getElementById('themeBtn').textContent = isDark ? '☀' : '☾';
+}
+document.getElementById('themeBtn').onclick = toggleTheme;
+
+function greeting(){
+  const h = new Date().getHours();
+  const g = h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  const active = data.projects.filter(p=>p.status==='active').length;
+  document.getElementById('greeting').textContent = active
+    ? `${g}. You have ${active} active project${active>1?'s':''}.`
+    : `${g}. Nothing active yet — start something below.`;
+}
+
+function render(){
+  greeting();
+  // inbox
+  const iw = document.getElementById('inboxWrap');
+  if(data.inbox.length){
+    let h = '<div class="section-title">Inbox</div><div class="card">';
+    data.inbox.forEach(item=>{
+      h += `<div class="inbox-item"><span style="flex:1;">${esc(item.text)}${extrasHtml(item)}</span>
+        <span><button class="mini-btn" onclick="inboxToProject('${item.id}')">→ Project</button>
+        <button class="mini-btn" onclick="removeInbox('${item.id}')">✕</button></span></div>`;
+    });
+    h += '</div>';
+    iw.innerHTML = h;
+  } else { iw.innerHTML = ''; }
+
+  // projects
+  const pw = document.getElementById('projectsWrap');
+  const active = data.projects.filter(p=>p.status!=='complete').sort((a,b)=>b.updatedAt-a.updatedAt);
+  const done = data.projects.filter(p=>p.status==='complete');
+  if(!active.length && !done.length){
+    pw.innerHTML = '<div class="empty"><div class="big">🧠</div>Capture what you are forgetting.<br>Tap + to start a project.</div>';
+    return;
+  }
+  let h = active.length ? '<div class="section-title">Active</div>' : '';
+  active.forEach(p=> h += projectCard(p));
+  if(done.length){
+    h += '<div class="section-title">Completed</div>';
+    done.forEach(p=> h += projectCard(p));
+  }
+  pw.innerHTML = h;
+}
+
+function projectCard(p){
+  const badge = p.status==='paused' ? '<span class="badge">Paused</span>' : p.status==='complete' ? '<span class="badge">Done</span>' : '';
+  return `<div class="card proj-card" onclick="openProject('${p.id}')">
+    <div class="proj-top">
+      <div><div class="proj-name">${esc(p.name)}</div><div class="stage">${esc(p.currentStage||'—')}</div></div>
+      ${badge}
+    </div>
+    ${p.status!=='complete' ? `<div class="next-label">Next action</div><div class="next-text">${esc(p.nextAction||'Not set')}</div>` : ''}
+    <div class="meta-row"><span>${p.sessions.length} sessions</span><span>${p.decisions.length} decisions</span><span>${p.completed.length} done</span></div>
+  </div>`;
+}
+
+function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// overlays
+function openOverlay(id){ document.getElementById(id).classList.add('open'); }
+function closeOverlay(id){ document.getElementById(id).classList.remove('open'); }
+document.getElementById('fabBtn').onclick = ()=>openOverlay('captureOv');
+
+function saveCapture(){
+  const v = document.getElementById('captureInput').value.trim();
+  if(!v) return;
+  readExtras('captureUrl','captureImg', (ex)=>{
+    data.inbox.push({id:uid(), text:v, url:ex.url, image:ex.image, createdAt:Date.now()});
+    document.getElementById('captureInput').value='';
+    closeOverlay('captureOv');
+    save();
+  });
+}
+function removeInbox(id){ data.inbox = data.inbox.filter(i=>i.id!==id); save(); }
+function inboxToProject(id){
+  const item = data.inbox.find(i=>i.id===id);
+  if(!item) return;
+  document.getElementById('npName').value = item.text;
+  document.getElementById('npGoal').value = '';
+  document.getElementById('npStage').value = 'Research';
+  document.getElementById('npNext').value = '';
+  data.inbox = data.inbox.filter(i=>i.id!==id);
+  save();
+  openOverlay('newProjOv');
+}
+
+function createProject(){
+  const name = document.getElementById('npName').value.trim();
+  if(!name) return;
+  const p = {
+    id: uid(), name,
+    goal: document.getElementById('npGoal').value.trim(),
+    currentStage: document.getElementById('npStage').value.trim(),
+    nextAction: document.getElementById('npNext').value.trim(),
+    status:'active', createdAt:Date.now(), updatedAt:Date.now(),
+    sessions:[], research:[], decisions:[], completed:[]
+  };
+  data.projects.push(p);
+  ['npName','npGoal','npStage','npNext'].forEach(id=>document.getElementById(id).value='');
+  closeOverlay('newProjOv');
+  save();
+}
+document.getElementById('fabBtn').addEventListener('dblclick', ()=>openOverlay('newProjOv'));
+
+// long-press-free simple second button for new project via header alt: use fab; add a second entry point
+document.querySelector('header').addEventListener('dblclick', ()=>openOverlay('newProjOv'));
+
+function openProject(id){
+  currentProjectId = id;
+  renderDetail();
+  openOverlay('detailOv');
+}
+function getProj(){ return data.projects.find(p=>p.id===currentProjectId); }
+
+function renderDetail(){
+  const p = getProj(); if(!p) return;
+  document.getElementById('detName').textContent = p.name;
+  document.getElementById('detStatus').value = p.status;
+  document.getElementById('detGoal').textContent = p.goal || '—';
+  document.getElementById('detStage').value = p.currentStage || '';
+  document.getElementById('detNext').value = p.nextAction || '';
+
+  document.getElementById('sessionList').innerHTML = p.sessions.slice().reverse().map(s=>
+    `<div class="log-entry"><div class="log-date">${fmtDate(s.at)}</div>
+     <div class="log-text"><b>Did:</b> ${esc(s.work)}</div>
+     <div class="log-text"><b>Stopped:</b> ${esc(s.stop)}</div>${extrasHtml(s)}</div>`
+  ).join('') || '<div class="list-item" style="color:var(--text-dim)">No sessions yet.</div>';
+
+  document.getElementById('researchList').innerHTML = p.research.slice().reverse().map(r=>
+    `<div class="list-item">${esc(r.title)} <span style="color:var(--text-dim);font-size:11px;"> — ${r.status}</span>${extrasHtml(r)}</div>`
+  ).join('') || '<div class="list-item" style="color:var(--text-dim)">Nothing researched yet.</div>';
+
+  document.getElementById('decisionList').innerHTML = p.decisions.slice().reverse().map(d=>
+    `<div class="decision-locked"><b>${esc(d.question)}</b><br>${esc(d.decision)}<br>
+     <span style="color:var(--text-dim);font-size:13px;">${esc(d.reason)}</span>
+     ${extrasHtml(d)}<div class="tag-locked">🔒 Locked ${fmtDate(d.at)}</div></div>`
+  ).join('') || '<div class="list-item" style="color:var(--text-dim)">No decisions locked yet.</div>';
+
+  document.getElementById('doneList').innerHTML = p.completed.slice().reverse().map(c=>
+    `<div class="list-item">✓ ${esc(c.text)}${extrasHtml(c)}</div>`
+  ).join('') || '<div class="list-item" style="color:var(--text-dim)">Nothing marked complete yet.</div>';
+}
+
+function autosaveField(field, value){
+  const p = getProj(); if(!p) return;
+  p[field] = value; p.updatedAt = Date.now();
+  store.set(data); render();
+}
+function updateStatus(){
+  const p = getProj(); if(!p) return;
+  p.status = document.getElementById('detStatus').value;
+  p.updatedAt = Date.now();
+  save();
+}
+function switchTab(paneId, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(paneId).classList.add('active');
+}
+function addSession(){
+  const p = getProj(); if(!p) return;
+  const work = document.getElementById('logWork').value.trim();
+  const stop = document.getElementById('logStop').value.trim();
+  if(!work && !stop) return;
+  readExtras('logUrl','logImg', (ex)=>{
+    p.sessions.push({id:uid(), work, stop, url:ex.url, image:ex.image, at:Date.now()});
+    p.updatedAt = Date.now();
+    document.getElementById('logWork').value=''; document.getElementById('logStop').value='';
+    save();
+  });
+}
+function addResearch(){
+  const p = getProj(); if(!p) return;
+  const title = document.getElementById('resTitle').value.trim();
+  if(!title) return;
+  readExtras('resUrl','resImg', (ex)=>{
+    p.research.push({id:uid(), title, status:document.getElementById('resStatus').value, url:ex.url, image:ex.image, at:Date.now()});
+    p.updatedAt = Date.now();
+    document.getElementById('resTitle').value='';
+    save();
+  });
+}
+function addDecision(){
+  const p = getProj(); if(!p) return;
+  const question = document.getElementById('decQ').value.trim();
+  const decision = document.getElementById('decD').value.trim();
+  const reason = document.getElementById('decReason').value.trim();
+  if(!question || !decision) return;
+  readExtras('decUrl','decImg', (ex)=>{
+    p.decisions.push({id:uid(), question, decision, reason, url:ex.url, image:ex.image, at:Date.now()});
+    p.updatedAt = Date.now();
+    ['decQ','decD','decReason'].forEach(id=>document.getElementById(id).value='');
+    save();
+  });
+}
+function addDone(){
+  const p = getProj(); if(!p) return;
+  const v = document.getElementById('doneInput').value.trim();
+  if(!v) return;
+  readExtras('doneUrl','doneImg', (ex)=>{
+    p.completed.push({id:uid(), text:v, url:ex.url, image:ex.image, at:Date.now()});
+    p.updatedAt = Date.now();
+    document.getElementById('doneInput').value='';
+    save();
+  });
+}
+
+initTheme();
+render();
+</script>
+</body>
+</html>
